@@ -556,12 +556,17 @@ Now let's build our mobile version of the news list. In app/views/news/index.mob
 we add just a tiny bit of code that links to the detail page for the news item.
 
     <div data-role="header">
-      <h1><%= @news_item.name %></h1>
-      <%= link_to 'Home', news_url, "class" => "ui-btn-right" %>
+      <h1>Latest News</h1>
     </div>
 
     <div data-role="content">
-      <%= @news_item.body %>
+      <ul data-role="listview">
+        <% @news_items.each do |news_item| %>
+        <li>
+          <%= link_to news_item.name, news_path(news_item) %>
+        </li>
+        <% end %>
+      </ul>
     </div>
   
 When we bring up http://localhost:3000/news.mobile in the browser, we see our 
