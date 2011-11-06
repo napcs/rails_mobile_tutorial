@@ -1,11 +1,14 @@
-Using Rails to build a News site with XML, JSON, and Mobile support
+Using Rails 3.1 to build a News site with XML, JSON, and Mobile support
 ==========
+
+by Brian P. Hogan
+
 Modern web applications need to be able to support multiple clients, from
 desktop browsers to mobile phones, and even the occasional content management
 system needs to be able to play nicely. We can use Ruby on Rails
 to quickly build a flexible back-end that can support many front-ends.
 
-To demonstrate, we'll build a simple Campus News site for a ficticious
+To demonstrate, we'll build a simple Campus News site for a fictitious
 university. It needs to work with the campus-wide content management
 system and needs a public mobile web interface that people
 can view on their phones.
@@ -14,6 +17,10 @@ We'll start out building a very basic administrative interface
 for adding news items, and then we'll explore how to publish
 those as JSON, XML, and then integrate jQuery Mobile.
 
+The source code for this is available at https://github.com/napcs/rails_mobile_tutorial and
+is broken into branches so you can follow along.
+
+Let's get started.
 
 Setting Up Our Environment
 ------
@@ -27,9 +34,9 @@ Ruby Version Manager.
     $ rvm gemset use campusnews
     
 Our newly created gemset will be empty. Let's
-get Rails installed...
+get Rails installed. We'll use version 3.1.1 for this tutorial.
 
-    $ gem install rails
+    $ gem install rails -v=3.1.1
     
 After Rails finishes installing its core dependencies,
 we can create a new application.
@@ -53,7 +60,7 @@ of Ruby and the right Gemset.
 
 We finally have our base app configured. Let's get to work on some code.
 
-Creating a news item
+Creating a News Item
 ---------------
 In our very simple news system, we're going to store pages in the database. Each page will
 have body content, some keywords, and a descriptive title we can use to locate
