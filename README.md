@@ -23,8 +23,8 @@ environment for our application, using RVM, the
 Ruby Version Manager.
 
     $ rvm install 1.9.2
-    $ rvm gemset create news
-    $ rvm gemset use news
+    $ rvm gemset create campusnews
+    $ rvm gemset use campusnews
     
 Our newly created gemset will be empty. Let's
 get Rails installed...
@@ -34,7 +34,7 @@ get Rails installed...
 After Rails finishes installing its core dependencies,
 we can create a new application.
     
-    $ rails new news
+    $ rails new campusnews
     
 This creates a CMS folder and starts installing
 several more libraries like CoffeeScript, Sass, and
@@ -436,7 +436,7 @@ we can restart our server.
     $ rails server
 
  
-Next, we open our news_controller.rb and create an index
+Next, we open our `news_controller.rb` and create an index
 action that fetches the news items in descending order by
 created_at date. When we generated our models and database table,
 Rails added created_at and updated_at timestamps to our database
@@ -446,7 +446,10 @@ automatically.
       @news_items = NewsItem.order("created_at desc").page(params[:page])
     end
     
-Our app/views/news/index.html.erb file is going to be very simple.
+Our `app/views/news/index.html.erb` file is going to be very simple. We'll
+have a link that shows the navigation bar for the pagination, which
+is provided by the Kaminari gem we added. Then we'll render our `news_item` 
+partial once for every news item.
 
     <%=paginate @news_items %>
 
@@ -456,7 +459,7 @@ We can pass our entire collection to the shared partial we made and it will
 automatically loop the results. Pretty cool, but we're not quite done.
    
 Before we can visit this news list in our browser, we have to
-modify the Routing system. We open config/routes.rb and add this to the top:
+modify the Routing system. We open `config/routes.rb` and add this to the top:
 
     resources :news, :only => [:index, :show]
 
