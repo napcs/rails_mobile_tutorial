@@ -1,8 +1,13 @@
 <div data-role="header">
-  <h1><%= @news_item.name %></h1>
-  <%= link_to 'Home', news_url, "class" => "ui-btn-right" %>
+  <h1>Latest News</h1>
 </div>
-
+ 
 <div data-role="content">
-  <%= @news_item.body %>
+  <ul data-role="listview">
+    <% @news_items.each do |news_item| %>
+    <li>
+      <%= link_to news_item.name, news_path(news_item) %>
+    </li>
+    <% end %>
+  </ul>
 </div>
