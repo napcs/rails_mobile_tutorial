@@ -1,4 +1,7 @@
 class NewsController < ApplicationController
+  
+  before_filter :detect_mobile
+  
   def index
     @news_items = NewsItem.order("created_at desc").page(params[:page])
 
