@@ -599,17 +599,46 @@ we visit localhost:3000/ we still see the "Welcome Aboard" page.
 This is because Rails can actually serve static web pages from the
 public folder, and there's one in there now called index.html.  Delete
 that file and you'll now see the news page.
+
 Using Subdomains To Set The Format
 ------------
+
+Right now, to get the mobile version of our site, our user
+has to add the .mobile extension to the URL. We could use
+browser detection techniques, but we can also use subdomains, which
+is a preferred approach.
+
+First, let's edit our /etc/hosts file and add this line, so we can test our site:
+
+    127.0.0.1 localhost.dev mobile.localhost.dev  
+    
+If you're on Windows, you'll edit your hosts file which is usually in 
+`c:\windows\system32\drivers\etc\hosts`.
+
+This lets us use http://localhost.dev:3000 and http://mobile.localhost.dev:3000
+to access our running web server. We can make Rails do different
+things based on the subdomain we use.
+
+In `app/controllers/application_controller.rb`, we can add a method
+we can use in all of our controllers to detect whether or not
+our users want to view the mobile version of our site.
 
     def detect_mobile
       request.format = "mobile" if request.subdomains.first == "mobile"
     end
 
+Then, in our `app/controllers/news_controller.rb`, at the top, we
+add a `before_filter` to invoke the mobile detection.
+
     before_filter :detect_mobile
     
 Now, when we request the url http://mobile.localhost.dev:3000/ we'll get our 
-mobile version.
+mobile version. Accessing http://localhost.dev:3000/ returns our original
+version. 
+
+To deploy this to a server, you'd need to make sure that you set up
+your DNS so that both "mobile" and "www" point to the same server. Rails
+can do the rest for you.
     
 Wrapping Up
 -------
