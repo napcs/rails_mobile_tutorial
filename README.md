@@ -585,7 +585,7 @@ look like this:
 
     <div data-role="header">
       <h1><%= @news_item.name %></h1>
-      <%= link_to 'Home', news_url, "class" => "ui-btn-right" %>
+      <%= link_to 'Home', root_url, "class" => "ui-btn-right" %>
     </div>
  
     <div data-role="content">
