@@ -121,7 +121,7 @@ Admin Interface
 Scaffolding is bad for the soul, so we'll just avoid it. Let's generate a news item management controller
 and some stub pages which we'll turn into forms and lists
 
-    $ rails g controller admin/newsitems index new show edit
+    $ rails g controller admin/news_items index new show edit
   
 This is going to be an extremely trivial controller. It will follow the typical design pattern of Rails, 
 and we'll skip writing functional tests for the new, index, show, and edit actions.
@@ -136,7 +136,7 @@ However, when we create and update pages, we'll have to do something
 based n the output, so we will write tests for those. First, let's
 tackle the views, though.
 
-For views/admin/news_items/index.html.erb, just make a simple table
+For `views/admin/news_items/index.html.erb`, just make a simple table
 that lists the items.
 
     <h2>News Items</h2>
@@ -163,7 +163,7 @@ that lists the items.
     </table>
 
 
-Before we can view this, we have to alter our routes.rb file and remove
+Before we can view this, we have to alter our `config/routes.rb` file and remove
 the routes the generator placed in, and replace it with
 
     namespace :admin do
@@ -217,7 +217,7 @@ because our controller isn't handling the the request.
 
 When we successfully save a news item, we want to redirect users to the list 
 page. Let's write a quick test for that. Open
- test/functional/admin/news_items_controller_test.rb and replace this code:
+`test/functional/admin/news_items_controller_test.rb` and replace this code:
 
   require 'test_helper'
 
