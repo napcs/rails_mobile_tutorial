@@ -1,0 +1,13 @@
+<%= form_for [:admin, @news_item] do |f| %>
+  <div class="row">
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </div>
+  <div class="row">
+    <%= f.label :body %>
+    <%= f.text_area :body %>
+  </div>
+
+  <%= f.submit %>
+
+<% end %>

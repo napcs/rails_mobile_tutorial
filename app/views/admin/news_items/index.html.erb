@@ -1,0 +1,22 @@
+<h2>News Items</h2>
+
+<p><%=link_to "Add News Item", new_admin_news_item_url%>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th colspan="3">Actions</th>
+  </tr>
+  <% @news_items.each do |news_item| %>
+  <tr>
+    <td><%= link_to "name", admin_news_item_url(news_item) %></td>
+    <td><%= link_to "edit", edit_admin_news_item_url(news_item) %></td>
+    <td>
+      <%= button_to "delete", admin_news_item_url(news_item), 
+                      :method => "delete",
+                      :confirm => "This will delete the news item. Are you sure?"
+      %>
+    </td>
+  </tr>
+  <% end %>
+</table>

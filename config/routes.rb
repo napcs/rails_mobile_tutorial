@@ -1,4 +1,9 @@
 Campusnews::Application.routes.draw do
+  
+  namespace :admin do
+    resources :news_items
+  end
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

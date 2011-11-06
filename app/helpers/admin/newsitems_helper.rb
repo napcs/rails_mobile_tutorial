@@ -1,0 +1,2 @@
+module Admin::NewsitemsHelper
+end
