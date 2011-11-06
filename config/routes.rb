@@ -1,4 +1,5 @@
 Campusnews::Application.routes.draw do
+  resources :news, :only => [:index, :show]
   
   namespace :admin do
     resources :news_items
