@@ -93,7 +93,19 @@ So, in `test/unit/news_item_test.rb` we'll have a couple of basic tests:
       end
     end
 
-We run our tests with
+Rails 3.1.1 includes the Turn gem by default, and unfortunately it can interfere
+with our tests. Open up `gemfile` and remote this section:
+
+    group :test do
+      # Pretty printed test output
+      gem 'turn', :require => false
+    end
+
+and then run 
+
+    $ bundle
+    
+again. We can now run our tests with
 
     $ rake test
     
