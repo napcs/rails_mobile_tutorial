@@ -1,11 +1,26 @@
-Rails 3.1 Super Simple CMS
+Using Rails to build a News site with XML, JSON, and Mobile support
 ==========
+Modern web applications need to be able to support multiple clients, from
+desktop browsers to mobile phones, and even the occasional content management
+system needs to be able to play nicely. We can use Ruby on Rails
+to quickly build a flexible back-end that can support many front-ends.
 
-Setup
+To demonstrate, we'll build a simple Campus News site for a ficticious
+university. It needs to work with the campus-wide content management
+system and needs a public mobile web interface that people
+can view on their phones.
+
+We'll start out building a very basic administrative interface
+for adding news items, and then we'll explore how to publish
+those as JSON, XML, and then integrate jQuery Mobile.
+
+
+Setting Up Our Environment
 ------
 
-First, we'll create a completely reproducable
-environment for our application, using RVM.
+First, we'll create a completely reproducible
+environment for our application, using RVM, the
+Ruby Version Manager.
 
     $ rvm install 1.9.2
     $ rvm gemset create news
@@ -59,7 +74,7 @@ As good Rails developers, we should write tests for this first. Our first two te
 easy - we verify that if we create new pages without names or contents then we'll have
 error messages in the collection of errors.
 
-So, in test/unit/news_item_test.rb we'll have a couple of basic tests:
+So, in `test/unit/news_item_test.rb` we'll have a couple of basic tests:
 
     require 'test_helper'
 
@@ -80,7 +95,7 @@ So, in test/unit/news_item_test.rb we'll have a couple of basic tests:
 
 We run our tests with
 
-    rake test
+    $ rake test
     
 and they fail since we haven't added the validation. Making them pass is as easy as adding 
 
@@ -94,7 +109,7 @@ Admin Interface
 Scaffolding is bad for the soul, so we'll just avoid it. Let's generate a news item management controller
 and some stub pages which we'll turn into forms and lists
 
-    rails g controller admin/newsitems index new show edit
+    $ rails g controller admin/newsitems index new show edit
   
 This is going to be an extremely trivial controller. It will follow the typical design pattern of Rails, 
 and we'll skip writing functional tests for the new, index, show, and edit actions.
@@ -103,7 +118,6 @@ and we'll skip writing functional tests for the new, index, show, and edit actio
       def index
         @news_items = NewsItem.all
       end
-    
     end
     
 However, when we create and update pages, we'll have to do something
@@ -146,12 +160,12 @@ the routes the generator placed in, and replace it with
 
 Now we can start our server with
 
-    rails server
+    $ rails server
     
 and visit http://localhost:3000/admin/news_items
 
 where we'll see absolutely no items.  Let's build the form for this. Edit 
-app/views/admin/news_items/new.html.erb and add this:
+`app/views/admin/news_items/new.html.erb` and add this:
     
     <h2>New News Item</h2>
     <%= render "form" %>
@@ -159,7 +173,7 @@ app/views/admin/news_items/new.html.erb and add this:
     
 This will render a "form partial" which we'll create. A partial lets us share
 code. Our new and edit forms will be exactly the same, so let's share 
-the code. Create app/views/admin/news_items/_form.html.erb.  The underscore
+the code. Create `app/views/admin/news_items/_form.html.erb`.  The underscore
 tells Rails it's a partial rather than a real view.
 
     <%= form_for [:admin, @news_item] do |f| %>
@@ -176,7 +190,7 @@ tells Rails it's a partial rather than a real view.
 
     <% end %>
     
-The form_for [:admin, @news_item] line handles creating the 
+The `form_for [:admin, @news_item]` line handles creating the 
 proper form action and method based on the object we pass in. But we need to create 
 this object instance somewhere. Add this to the controller:
 
@@ -212,7 +226,7 @@ action.
     def create
       @news_item = NewsItem.new(params[:news_item])
       if @news_item.save
-        redirect_to admin_news_items_url
+        redirect_to admin_news_items_url, :notice => "Created successfully."
       end
     end
     
@@ -230,7 +244,7 @@ Then to make it pass we modify our controller:
     def create
       @news_item = NewsItem.new(params[:news_item])
       if @news_item.save
-        redirect_to admin_news_items_url
+        redirect_to admin_news_items_url, :notice => "Created successfully."
       else
         render :action => "new"
       end
@@ -306,7 +320,7 @@ action like this:
     def update
       @news_item = NewsItem.find params[:id]
       if @news_item.update_attributes(params[:news_item])
-        redirect_to admin_news_items_url
+        redirect_to admin_news_items_url, :notice => "Saved successfully."
       end
     end
     
@@ -326,41 +340,80 @@ And finally, implement the failing case in the controller
     def update
       @news_item = NewsItem.find params[:id]
       if @news_item.update_attributes(params[:news_item])
-        redirect_to admin_news_items_url
+        redirect_to admin_news_items_url, :notice => "Saved successfully."
       else
         render :action => "edit"
       end
     end
     
-Back in the browser, refresh. YOu should new see changes to the
+Back in the browser, refresh. You should new see changes to the
 entry.
 
-Our back end is all set up.  We can handle deleting records another time. 
+Showing Status Messages
+---------
+Our application uses a default template in `app/views/layouts/application.html.erb`. This
+file contains the outer HTML that wraps our pages. Let's
+modify it so it displays the success message we send from the
+controller when we save records. While we're in there, we'll fix up 
+the markup a bit, and add a header and a footer.
+
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>News</title>
+        <%= stylesheet_link_tag    "application" %>
+        <%= javascript_include_tag "application" %>
+        <%= csrf_meta_tags %>
+      </head>
+      <body>
+
+      <header>
+        <h1>Campus News</h1>
+      </header>
+
+      <% if notice %>
+        <div id="notice"><% =notice %></div>
+      <% end %>
+
+      <section>
+        <%= yield %>
+      </section>
+
+      <footer>
+        <h4>Copyright &copy; Campus</h4>
+      </footer>
+
+      </body>
+    </html>
+
+When we review the page again, our layout is in place and things are moving
+in the right direction.  Our back end is all set up.  We can handle deleting records another time. 
 Let's build the public-facing news feed.
+
 
 Building the News Feeds
 --------
 We want to list all stories, starting with the newest one first.
 First we generate a controller for our public news feed
 
-    rails g controller news
+    $ rails g controller news
     
 In the controller's action, we'll fetch the latest 10 news
 items. We could limit, but instead, we'll use a pagination
 plugin called Kaminari.
 
-Open the Gemfile and add
+Open `Gemfile` and add
 
     gem 'kaminari'
  
 Now stop the web server with CTRL+C and run
 
-    bundle
+    $ bundle
     
 to install and fetch the new Kaminari library. When that's done,
 we can restart our server.
 
-    rails server
+    $ rails server
 
  
 Next, we open our news_controller.rb and create an index
