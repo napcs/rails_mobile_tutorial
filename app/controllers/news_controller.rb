@@ -9,4 +9,9 @@ class NewsController < ApplicationController
     end
 
   end
+  
+  def show
+    @news_item = NewsItem.find params[:id]
+  end
+  
 end
