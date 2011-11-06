@@ -318,13 +318,16 @@ save then we want to go back to the edit page. We need tests for this.
 In test/functional/admin/news_items_controller_test.rb, add this test:
 
     def test_redirects_to_list_when_updated
-      put :update, :news_item => {:name => "Test", :body => "test"}
+      news_item = NewsItem.create :name => "Test", :body => "Test"
+      put :update, :id => news_item.id, :news_item => {:name => "Test", :body => "test"}
       assert_redirected_to admin_news_items_url
     end
   
 Rails assumes that update requests will use the HTTP PUT verb, and that
 is what our forms generate. So we need to make our tests work that way
-too.
+too. In addition, we need a record to update, so in our test we quickly
+create a news item. When we make the `put` request, we pass the id of the post
+we want to update followed by the form parameters.
   
 We run the tests to ensure it fails, then implement the controller's update
 action like this:
@@ -343,11 +346,16 @@ method returns a boolean value which we evaluate to see if the save worked.
 Now we add the test for the failing case:
 
     def test_redisplays_form_when_update_fails
-      put :update
+      news_item = NewsItem.create :name => "Test", :body => "Test"  
+      put :update, :id => news_item.id, :news_item => {:name => "", :body => ""}
       assert_template :edit
     end
     
-And finally, implement the failing case in the controller  
+This test looks a lot like the last one, but this time we just
+don't send blank values for the name and body. These should be
+invalid per our business logic we wrote earlier.
+
+Finally, we implement the failing case in the controller  
 
     def update
       @news_item = NewsItem.find params[:id]
