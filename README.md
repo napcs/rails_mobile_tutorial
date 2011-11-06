@@ -399,7 +399,7 @@ the markup a bit, and add a header and a footer.
       </header>
 
       <% if notice %>
-        <div id="notice"><% =notice %></div>
+        <div id="notice"><%= notice %></div>
       <% end %>
 
       <section>
