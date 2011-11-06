@@ -1,14 +1,28 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Campusnews</title>
-  <%= stylesheet_link_tag    "application" %>
-  <%= javascript_include_tag "application" %>
-  <%= csrf_meta_tags %>
-</head>
-<body>
+  <head>
+    <title>News</title>
+    <%= stylesheet_link_tag    "application" %>
+    <%= javascript_include_tag "application" %>
+    <%= csrf_meta_tags %>
+  </head>
+  <body>
 
-<%= yield %>
+  <header>
+    <h1>Campus News</h1>
+  </header>
 
-</body>
+  <% if notice %>
+    <div id="notice"><% =notice %></div>
+  <% end %>
+
+  <section>
+    <%= yield %>
+  </section>
+
+  <footer>
+    <h4>Copyright &copy; Campus</h4>
+  </footer>
+
+  </body>
 </html>
